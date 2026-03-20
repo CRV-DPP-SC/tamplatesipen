@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRV — Gerenciador de Templates iPEN</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f4f5f7;
+  --surface: #ffffff;
+  --surface-2: #f0f1f4;
+  --border: #e0e2e8;
+  --border-focus: #4a7ce0;
+  --text: #1a1d27;
+  --text-dim: #6b7088;
+  --accent: #4a6cf7;
+  --accent-light: #eef1fe;
+  --green: #16a34a;
+  --green-light: #ecfdf3;
+  --orange: #d97706;
+  --orange-light: #fefce8;
+  --red: #dc2626;
+  --red-light: #fef2f2;
+  --blue: #2563eb;
+  --purple: #7c3aed;
+  --pink: #db2777;
+  --teal: #0d9488;
+  --radius: 12px;
+  --font: 'DM Sans', -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 30px rgba(0,0,0,0.1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+.header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow-sm);
+}
+
+.header-left { display: flex; align-items: center; gap: 12px; }
+
+.logo {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, #4a6cf7, #7c3aed);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 700; color: white; font-family: var(--mono);
+}
+
+.header h1 { font-size: 1.1rem; font-weight: 700; letter-spacing: -0.02em; }
+.header h1 span { color: var(--text-dim); font-weight: 400; font-size: 0.82rem; margin-left: 6px; }
+
+.header-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+.badge {
+  background: var(--surface-2); border: 1px solid var(--border); border-radius: 20px;
+  padding: 5px 12px; font-size: 0.75rem; color: var(--text-dim); font-family: var(--mono);
+}
+
+.btn {
+  padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border);
+  background: var(--surface); color: var(--text); font-family: var(--font);
+  font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+  display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+}
+.btn:hover { border-color: var(--accent); color: var(--accent); box-shadow: var(--shadow-sm); }
+
+.btn-primary { background: var(--accent); border-color: var(--accent); color: white; }
+.btn-primary:hover { background: #3d5ce0; color: white; box-shadow: 0 4px 12px rgba(74,108,247,0.3); }
+
+.btn-download { background: linear-gradient(135deg, #16a34a, #0d9488); border-color: #16a34a; color: white; }
+.btn-download:hover { box-shadow: 0 4px 12px rgba(22,163,74,0.3); color: white; }
+
+.url-bar {
+  background: var(--accent-light); border-bottom: 1px solid var(--border);
+  padding: 10px 32px; display: flex; align-items: center; gap: 10px; font-size: 0.82rem;
+}
+.url-bar label { font-weight: 600; color: var(--accent); white-space: nowrap; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.03em; font-family: var(--mono); }
+.url-bar input { flex: 1; padding: 7px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: var(--mono); font-size: 0.8rem; outline: none; }
+.url-bar input:focus { border-color: var(--accent); }
+.url-bar .url-hint { color: var(--text-dim); font-size: 0.75rem; }
+
+.container { max-width: 1200px; margin: 0 auto; padding: 24px 32px; }
+
+.toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; gap: 12px; flex-wrap: wrap; }
+
+.search-box { flex: 1; min-width: 220px; max-width: 380px; position: relative; }
+.search-box input { width: 100%; padding: 10px 14px 10px 38px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: var(--font); font-size: 0.85rem; outline: none; transition: border-color 0.2s; box-shadow: var(--shadow-sm); }
+.search-box input:focus { border-color: var(--accent); }
+.search-box::before { content: '🔍'; position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 13px; opacity: 0.5; }
+
+.template-count { font-size: 0.82rem; color: var(--text-dim); font-family: var(--mono); }
+
+.templates-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px; }
+
+.template-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: all 0.2s; box-shadow: var(--shadow-sm); }
+.template-card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); border-color: #c8cad4; }
+
+.card-header { padding: 14px 16px 10px; display: flex; align-items: flex-start; gap: 10px; }
+.card-color-bar { width: 4px; height: 36px; border-radius: 2px; flex-shrink: 0; margin-top: 2px; }
+.card-title-area { flex: 1; }
+.card-title { font-size: 0.88rem; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 1px; }
+.card-id { font-size: 0.7rem; color: var(--text-dim); font-family: var(--mono); }
+.card-actions { display: flex; gap: 4px; opacity: 0; transition: opacity 0.2s; }
+.template-card:hover .card-actions { opacity: 1; }
+.card-btn { width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text-dim); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 13px; transition: all 0.15s; }
+.card-btn:hover { border-color: var(--accent); color: var(--accent); }
+.card-btn.delete:hover { border-color: var(--red); color: var(--red); }
+
+.card-body { padding: 0 16px 14px; }
+.card-text { font-size: 0.8rem; color: var(--text-dim); line-height: 1.65; max-height: 100px; overflow: hidden; position: relative; white-space: pre-wrap; }
+.card-text::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 36px; background: linear-gradient(transparent, var(--surface)); }
+
+.card-footer { padding: 10px 16px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.card-tag { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 4px; font-size: 0.7rem; font-weight: 600; font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.04em; }
+.card-copy-btn { padding: 5px 12px; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--text-dim); font-size: 0.73rem; cursor: pointer; font-family: var(--font); font-weight: 600; transition: all 0.15s; }
+.card-copy-btn:hover { border-color: var(--green); color: var(--green); background: var(--green-light); }
+
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.3); backdrop-filter: blur(4px); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+.modal-overlay.active { opacity: 1; pointer-events: all; }
+.modal { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 580px; max-height: 85vh; overflow-y: auto; box-shadow: var(--shadow-lg); transform: translateY(16px) scale(0.98); transition: transform 0.2s; }
+.modal-overlay.active .modal { transform: translateY(0) scale(1); }
+.modal-header { padding: 18px 22px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.modal-header h2 { font-size: 1rem; font-weight: 700; }
+.modal-close { width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--text-dim); cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+.modal-close:hover { border-color: var(--red); color: var(--red); background: var(--red-light); }
+.modal-body { padding: 18px 22px; }
+.form-group { margin-bottom: 16px; }
+.form-group label { display: block; font-size: 0.78rem; font-weight: 600; margin-bottom: 5px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.04em; font-family: var(--mono); }
+.form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px 14px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: var(--font); font-size: 0.85rem; outline: none; transition: border-color 0.2s; }
+.form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--accent); background: white; }
+.form-group textarea { min-height: 150px; resize: vertical; line-height: 1.7; }
+.form-group select { cursor: pointer; }
+.color-options { display: flex; gap: 8px; flex-wrap: wrap; }
+.color-opt { width: 30px; height: 30px; border-radius: 8px; border: 2px solid transparent; cursor: pointer; transition: all 0.15s; }
+.color-opt:hover { transform: scale(1.15); }
+.color-opt.selected { border-color: var(--text); box-shadow: 0 0 0 2px var(--surface); }
+.modal-footer { padding: 14px 22px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 8px; }
+
+.json-panel { margin-top: 28px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-sm); overflow: hidden; }
+.json-header { padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--surface-2); }
+.json-header h3 { font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.json-content { padding: 14px 16px; max-height: 260px; overflow: auto; }
+.json-content pre { font-family: var(--mono); font-size: 0.75rem; color: var(--text-dim); white-space: pre-wrap; line-height: 1.6; }
+
+.install-box { margin-top: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 22px; box-shadow: var(--shadow-sm); }
+.install-box h3 { font-size: 0.9rem; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.install-box ol { padding-left: 20px; color: var(--text-dim); font-size: 0.82rem; line-height: 2; }
+.install-box code { background: var(--surface-2); padding: 2px 8px; border-radius: 4px; font-family: var(--mono); font-size: 0.78rem; color: var(--accent); }
+.install-box .hint { margin-top: 12px; font-size: 0.8rem; color: var(--text-dim); padding: 10px 14px; background: var(--green-light); border-radius: 8px; border-left: 3px solid var(--green); }
+
+.toast { position: fixed; bottom: 24px; right: 24px; background: var(--surface); border: 1px solid var(--green); color: var(--green); padding: 12px 20px; border-radius: 10px; font-size: 0.82rem; font-weight: 600; z-index: 300; transform: translateY(80px); opacity: 0; transition: all 0.3s; font-family: var(--font); box-shadow: var(--shadow-md); }
+.toast.show { transform: translateY(0); opacity: 1; }
+
+@media (max-width: 700px) {
+  .header { padding: 14px 16px; flex-wrap: wrap; gap: 10px; }
+  .header-actions { width: 100%; justify-content: flex-end; }
+  .url-bar { padding: 10px 16px; flex-wrap: wrap; }
+  .container { padding: 20px 16px; }
+  .templates-grid { grid-template-columns: 1fr; }
+  .toolbar { flex-direction: column; align-items: stretch; }
+  .search-box { max-width: none; }
+}
+</style>
+</head>
+<body>
+
+<script id="template-data" type="application/json">
+[
+  {"id":"ordinaria","titulo":"Transferência Ordinária","texto":"Aprovado em razão da fundamentação apresentada, considerando a adequação aos critérios estabelecidos pela Resolução Conjunta Interinstitucional n. 1/2026 e a disponibilidade de vaga na unidade de destino, conforme verificação realizada pela Central de Regulação de Vagas (CRV).","cor":"#16a34a","categoria":"aprovacao"},
+  {"id":"disciplinar","titulo":"Transferência Disciplinar","texto":"Aprovado o pedido de transferência disciplinar, nos termos do art. 60 da LEP c/c LC 529/2011, considerando a necessidade de preservação da ordem e disciplina na unidade de origem, bem como a existência de vaga compatível na unidade de destino.\n\nPrazo preventivo: até 10 (dez) dias.\nPrazo sanção com PAD instaurado: até 30 (trinta) dias.","cor":"#d97706","categoria":"aprovacao"},
+  {"id":"seguranca","titulo":"Transferência por Segurança","texto":"Aprovado o pedido de transferência por motivo de segurança, em razão da situação de risco devidamente comprovada, nos termos da legislação vigente, com destinação à unidade que oferece condições adequadas de custódia.","cor":"#dc2626","categoria":"aprovacao"},
+  {"id":"saude","titulo":"Transferência por Saúde","texto":"Aprovado o pedido de transferência por motivo de saúde, considerando o laudo médico apresentado e a necessidade de tratamento especializado não disponível na unidade de origem.","cor":"#2563eb","categoria":"aprovacao"},
+  {"id":"interesse_publico","titulo":"Transferência por Interesse Público","texto":"Aprovado o pedido de transferência por interesse da administração pública, visando à melhor gestão do sistema prisional e adequação da lotação das unidades sob jurisdição do Departamento de Polícia Penal.","cor":"#7c3aed","categoria":"aprovacao"},
+  {"id":"judicial","titulo":"Transferência Judicial","texto":"Cumprida a determinação judicial de transferência, conforme decisão proferida nos autos do processo indicado, com a devida comunicação ao Juízo de origem e ao Juízo da Comarca de destino.","cor":"#4a6cf7","categoria":"judicial"},
+  {"id":"recambiamento","titulo":"Recambiamento","texto":"Determinado o recambiamento à unidade de origem, considerando o cumprimento da finalidade que ensejou a transferência temporária e a necessidade de retorno à unidade prisional de lotação.","cor":"#0d9488","categoria":"recambiamento"},
+  {"id":"pedido_voluntario","titulo":"Pedido Voluntário (Memorando do Preso)","texto":"Recebido o pedido voluntário de transferência formulado pela pessoa privada de liberdade. Encaminhado para análise da unidade de destino e verificação de vaga pela CRV.\n\nAguardando manifestação da unidade de destino.","cor":"#d97706","categoria":"pedido"},
+  {"id":"aprovacao_mesmo_complexo","titulo":"Aprovação — Transferência no mesmo complexo","texto":"Aprovada a transferência interna no âmbito do mesmo complexo prisional, dispensada a análise pela CRV, conforme protocolo de gestão interna da unidade.","cor":"#6b7280","categoria":"aprovacao"},
+  {"id":"mandado_comarca_diversa","titulo":"Cumprimento de mandado de prisão expedido por comarca diversa","texto":"Realizada a custódia em cumprimento ao mandado de prisão expedido por comarca diversa. Comunicado o Juízo expedidor e providenciada a apresentação na forma da lei.\n\nAguardando determinação judicial para definição da unidade prisional de destino.","cor":"#dc2626","categoria":"judicial"},
+  {"id":"negativa_mesmo_complexo","titulo":"Negativa — Transferência no mesmo complexo","texto":"Indeferido o pedido de transferência no mesmo complexo prisional, tendo em vista a ausência de vaga compatível / inadequação do perfil custodiado / motivo a ser complementado pela unidade.","cor":"#dc2626","categoria":"negativa"}
+]
+</script>
+
+<header class="header">
+  <div class="header-left">
+    <div class="logo">CV</div>
+    <h1>CRV Templates <span>Gerenciador iPEN</span></h1>
+  </div>
+  <div class="header-actions">
+    <span class="badge" id="version-badge">v6.0</span>
+    <button class="btn" onclick="exportJSON()">📋 JSON</button>
+    <button class="btn btn-download" onclick="downloadPlugin()" id="btn-download">⬇ Baixar Plugin</button>
+    <button class="btn btn-primary" onclick="openModal()">＋ Novo Template</button>
+  </div>
+</header>
+
+<div class="url-bar">
+  <label>🔗 URL pública</label>
+  <input type="text" id="public-url" placeholder="https://seu-usuario.github.io/crv-templates/index.html" oninput="saveURL()">
+  <span class="url-hint">O plugin busca os templates desta URL</span>
+</div>
+
+<main class="container">
+  <div class="toolbar">
+    <div class="search-box">
+      <input type="text" id="search" placeholder="Buscar templates..." oninput="renderCards()">
+    </div>
+    <span class="template-count" id="count"></span>
+  </div>
+
+  <div class="templates-grid" id="grid"></div>
+
+  <div class="json-panel">
+    <div class="json-header">
+      <h3>{ } JSON para o Plugin</h3>
+      <button class="btn" onclick="exportJSON()" style="font-size:0.78rem;padding:5px 12px;">Copiar</button>
+    </div>
+    <div class="json-content"><pre id="json-preview"></pre></div>
+  </div>
+
+  <div class="install-box">
+    <h3>📖 Como funciona</h3>
+    <ol>
+      <li>Edite os templates acima (criar, alterar, excluir)</li>
+      <li>Clique em <strong>"⬇ Baixar Plugin"</strong> — o ZIP já vem com os templates atuais</li>
+      <li>Descompacte e instale: <code>chrome://extensions</code> → Modo desenvolvedor → Carregar sem compactação</li>
+      <li>O plugin busca templates desta página <strong>automaticamente</strong> — editou aqui, atualizou lá</li>
+    </ol>
+    <div class="hint">
+      💡 <strong>Atualização em tempo real:</strong> Se este HTML estiver publicado (ex: GitHub Pages), o plugin busca os templates toda vez que você abre o painel. Sem reinstalar nada!
+    </div>
+  </div>
+</main>
+
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="modal-title">Novo Template</h2>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group"><label>ID (identificador único)</label><input type="text" id="f-id" placeholder="ex: ordinaria, disciplinar_v2"></div>
+      <div class="form-group"><label>Título</label><input type="text" id="f-titulo" placeholder="Nome do template"></div>
+      <div class="form-group"><label>Texto do Template</label><textarea id="f-texto" placeholder="Texto que será colado no iPEN..."></textarea></div>
+      <div class="form-group"><label>Categoria</label><select id="f-categoria"><option value="aprovacao">Aprovação</option><option value="negativa">Negativa</option><option value="judicial">Judicial</option><option value="recambiamento">Recambiamento</option><option value="pedido">Pedido</option><option value="outro">Outro</option></select></div>
+      <div class="form-group"><label>Cor</label><div class="color-options" id="color-options"></div></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveTemplate()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>
+let templates=[], editingId=null;
+const COLORS=['#16a34a','#d97706','#dc2626','#2563eb','#7c3aed','#4a6cf7','#db2777','#0d9488','#6b7280'];
+
+function init(){
+  templates=JSON.parse(document.getElementById('template-data').textContent);
+  renderCards(); renderJSON(); renderColorOptions();
+  const s=localStorage.getItem('crv-public-url');
+  if(s) document.getElementById('public-url').value=s;
+}
+function saveURL(){ localStorage.setItem('crv-public-url', document.getElementById('public-url').value.trim()); }
+
+function renderCards(){
+  const g=document.getElementById('grid'), s=document.getElementById('search').value.toLowerCase();
+  const f=templates.filter(t=>t.titulo.toLowerCase().includes(s)||t.texto.toLowerCase().includes(s)||t.id.toLowerCase().includes(s)||t.categoria.toLowerCase().includes(s));
+  g.innerHTML=f.map(t=>`<div class="template-card"><div class="card-header"><div class="card-color-bar" style="background:${t.cor}"></div><div class="card-title-area"><div class="card-title">${t.titulo}</div><div class="card-id">${t.id}</div></div><div class="card-actions"><button class="card-btn" onclick="editTemplate('${t.id}')" title="Editar">✏️</button><button class="card-btn delete" onclick="deleteTemplate('${t.id}')" title="Excluir">🗑️</button></div></div><div class="card-body"><div class="card-text">${escapeHtml(t.texto)}</div></div><div class="card-footer"><span class="card-tag" style="background:${t.cor}15;color:${t.cor}">${t.categoria}</span><button class="card-copy-btn" onclick="copyText('${t.id}')">Copiar texto</button></div></div>`).join('');
+  document.getElementById('count').textContent=`${f.length} de ${templates.length} templates`;
+}
+function renderJSON(){ document.getElementById('json-preview').textContent=JSON.stringify(templates,null,2); }
+function renderColorOptions(sel){
+  const c=document.getElementById('color-options');
+  c.innerHTML=COLORS.map(x=>`<div class="color-opt ${x===sel?'selected':''}" style="background:${x}" onclick="selectColor('${x}')"></div>`).join('');
+}
+function selectColor(c){ document.querySelectorAll('.color-opt').forEach(e=>e.classList.remove('selected')); event.target.classList.add('selected'); document.getElementById('color-options').dataset.selected=c; }
+
+function openModal(id){
+  editingId=id||null;
+  if(id){const t=templates.find(x=>x.id===id);document.getElementById('modal-title').textContent='Editar Template';document.getElementById('f-id').value=t.id;document.getElementById('f-id').disabled=true;document.getElementById('f-titulo').value=t.titulo;document.getElementById('f-texto').value=t.texto;document.getElementById('f-categoria').value=t.categoria;renderColorOptions(t.cor);document.getElementById('color-options').dataset.selected=t.cor;}
+  else{document.getElementById('modal-title').textContent='Novo Template';document.getElementById('f-id').value='';document.getElementById('f-id').disabled=false;document.getElementById('f-titulo').value='';document.getElementById('f-texto').value='';document.getElementById('f-categoria').value='aprovacao';renderColorOptions(COLORS[0]);document.getElementById('color-options').dataset.selected=COLORS[0];}
+  document.getElementById('modal').classList.add('active');
+}
+function closeModal(){ document.getElementById('modal').classList.remove('active'); editingId=null; }
+function editTemplate(id){ openModal(id); }
+
+function saveTemplate(){
+  const id=document.getElementById('f-id').value.trim().replace(/\s+/g,'_').toLowerCase(), titulo=document.getElementById('f-titulo').value.trim(), texto=document.getElementById('f-texto').value.trim(), categoria=document.getElementById('f-categoria').value, cor=document.getElementById('color-options').dataset.selected||COLORS[0];
+  if(!id||!titulo||!texto){toast('Preencha todos os campos','#dc2626');return;}
+  if(editingId){const i=templates.findIndex(t=>t.id===editingId);templates[i]={id,titulo,texto,cor,categoria};}
+  else{if(templates.some(t=>t.id===id)){toast('ID já existe','#dc2626');return;}templates.push({id,titulo,texto,cor,categoria});}
+  updateEmbeddedJSON();renderCards();renderJSON();closeModal();toast(editingId?'Atualizado!':'Criado!');
+}
+function deleteTemplate(id){const t=templates.find(x=>x.id===id);if(!confirm(`Excluir "${t.titulo}"?`))return;templates=templates.filter(x=>x.id!==id);updateEmbeddedJSON();renderCards();renderJSON();toast('Excluído','#d97706');}
+function updateEmbeddedJSON(){document.getElementById('template-data').textContent=JSON.stringify(templates,null,2);}
+function copyText(id){navigator.clipboard.writeText(templates.find(x=>x.id===id).texto).then(()=>toast('Copiado!'));}
+function exportJSON(){navigator.clipboard.writeText(JSON.stringify(templates,null,2)).then(()=>toast('JSON copiado!'));}
+
+// ============================================
+// DOWNLOAD PLUGIN
+// ============================================
+async function downloadPlugin(){
+  const btn=document.getElementById('btn-download');
+  btn.textContent='⏳ Gerando...'; btn.disabled=true;
+  try{
+    const url=document.getElementById('public-url').value.trim();
+    const zip=new JSZip(), folder=zip.folder('crv-extension');
+    folder.file('manifest.json',JSON.stringify({manifest_version:3,name:"CRV — Templates iPEN",version:"6.0.0",description:"Templates de transferência para o iPEN — CRV",permissions:["activeTab","clipboardWrite"],content_scripts:[{matches:["<all_urls>"],js:["crv.js"],css:["crv.css"]}]},null,2));
+    folder.file('crv.css',genCSS());
+    folder.file('crv.js',genJS(templates,url));
+    const blob=await zip.generateAsync({type:'blob'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='crv-extension-v6.zip';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(a.href);
+    toast('Plugin baixado — '+templates.length+' templates!');
+  }catch(e){toast('Erro: '+e.message,'#dc2626');}
+  finally{btn.textContent='⬇ Baixar Plugin';btn.disabled=false;}
+}
+
+function genCSS(){return `#crv-float-btn{position:fixed;bottom:28px;right:28px;width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#4a6cf7,#7c3aed);color:#fff;border:none;cursor:pointer;z-index:999999;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;font-family:-apple-system,sans-serif;box-shadow:0 4px 20px rgba(74,108,247,0.35);transition:all .3s}#crv-float-btn:hover{transform:scale(1.08)}#crv-float-btn.active{border-radius:14px;width:46px;height:46px;font-size:17px}
+#crv-panel{position:fixed;bottom:94px;right:28px;width:380px;max-height:520px;background:#fff;border:1px solid #e0e2e8;border-radius:14px;z-index:999998;display:none;flex-direction:column;font-family:-apple-system,'Segoe UI',sans-serif;box-shadow:0 12px 40px rgba(0,0,0,0.12);overflow:hidden;animation:crvUp .25s ease}#crv-panel.show{display:flex}@keyframes crvUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.crv-hdr{padding:14px 16px;border-bottom:1px solid #e0e2e8;display:flex;align-items:center;justify-content:space-between}.crv-hdr h3{font-size:13px;font-weight:700;color:#1a1d27;margin:0}.crv-hdr .crv-badge{font-size:10px;color:#4a6cf7;background:rgba(74,108,247,0.1);padding:2px 8px;border-radius:4px;font-weight:600}
+.crv-search{padding:8px 16px;border-bottom:1px solid #e0e2e8}.crv-search input{width:100%;padding:7px 11px;background:#f4f5f7;border:1px solid #e0e2e8;border-radius:7px;color:#1a1d27;font-size:12.5px;outline:none;font-family:inherit}.crv-search input:focus{border-color:#4a6cf7}
+.crv-list{flex:1;overflow-y:auto;padding:6px}.crv-item{padding:10px 12px;border-radius:9px;cursor:pointer;transition:background .15s;margin-bottom:3px}.crv-item:hover{background:#f4f5f7}
+.crv-item-hdr{display:flex;align-items:center;gap:7px;margin-bottom:3px}.crv-item-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}.crv-item-title{font-size:12.5px;font-weight:600;color:#1a1d27}
+.crv-item-preview{font-size:11px;color:#6b7088;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.crv-item-actions{display:flex;gap:5px;margin-top:6px}.crv-item-btn{padding:3px 9px;border-radius:5px;border:1px solid #e0e2e8;background:transparent;color:#6b7088;font-size:10.5px;cursor:pointer;font-family:inherit;font-weight:600;transition:all .15s}.crv-item-btn:hover{border-color:#4a6cf7;color:#4a6cf7}.crv-item-btn.paste:hover{border-color:#16a34a;color:#16a34a}
+.crv-ft{padding:8px 16px;border-top:1px solid #e0e2e8;font-size:10px;color:#6b7088;text-align:center}
+.crv-toast{position:fixed;bottom:94px;right:28px;background:#fff;border:1px solid #16a34a;color:#16a34a;padding:9px 16px;border-radius:9px;font-size:12px;font-weight:600;font-family:-apple-system,sans-serif;z-index:999999;transform:translateY(80px);opacity:0;transition:all .3s;box-shadow:0 4px 16px rgba(0,0,0,0.08)}.crv-toast.show{transform:translateY(0);opacity:1}`;}
+
+function genJS(tpls,publicURL){
+  const json=JSON.stringify(tpls);
+  const fetchBlock=publicURL?`
+  const TEMPLATE_URL='${publicURL}';
+  async function fetchRemote(){try{const r=await fetch(TEMPLATE_URL,{cache:'no-cache'});if(!r.ok)throw new Error(r.status);const h=await r.text(),m=h.match(/<script\\s+id="template-data"[^>]*>([\\s\\S]*?)<\\/script>/i);if(m&&m[1]){const p=JSON.parse(m[1].trim());if(Array.isArray(p)&&p.length){templates=p;updateBadge();renderList();}}}catch(e){console.warn('[CRV] Offline:',e.message);}}` : `function fetchRemote(){return Promise.resolve();}`;
+
+  return `(function(){'use strict';if(document.getElementById('crv-float-btn'))return;
+let templates=${json};let panelOpen=false;
+${fetchBlock}
+function updateBadge(){const b=document.querySelector('.crv-badge');if(b)b.textContent=templates.length+' modelos';}
+function buildUI(){const btn=document.createElement('button');btn.id='crv-float-btn';btn.textContent='CV';btn.title='CRV Templates';btn.addEventListener('click',togglePanel);document.body.appendChild(btn);
+const p=document.createElement('div');p.id='crv-panel';p.innerHTML='<div class="crv-hdr"><h3>CRV — Templates iPEN</h3><span class="crv-badge">'+templates.length+' modelos</span></div><div class="crv-search"><input type="text" id="crv-si" placeholder="Buscar..."></div><div class="crv-list" id="crv-list"></div><div class="crv-ft">v6.0 · Copiar ou Colar no iPEN</div>';document.body.appendChild(p);
+const t=document.createElement('div');t.className='crv-toast';t.id='crv-toast';document.body.appendChild(t);
+document.getElementById('crv-si').addEventListener('input',renderList);}
+function togglePanel(){panelOpen=!panelOpen;const p=document.getElementById('crv-panel'),b=document.getElementById('crv-float-btn');if(panelOpen){p.classList.add('show');b.classList.add('active');b.textContent='\\u2715';renderList();fetchRemote().then(renderList);}else{p.classList.remove('show');b.classList.remove('active');b.textContent='CV';}}
+function renderList(){const c=document.getElementById('crv-list'),s=(document.getElementById('crv-si')?.value||'').toLowerCase();const f=templates.filter(t=>t.titulo.toLowerCase().includes(s)||t.texto.toLowerCase().includes(s)||t.categoria.toLowerCase().includes(s));
+c.innerHTML=f.map(t=>'<div class="crv-item"><div class="crv-item-hdr"><div class="crv-item-dot" style="background:'+t.cor+'"></div><span class="crv-item-title">'+t.titulo+'</span></div><div class="crv-item-preview">'+t.texto.substring(0,120)+'...</div><div class="crv-item-actions"><button class="crv-item-btn" data-a="copy" data-id="'+t.id+'">📋 Copiar</button><button class="crv-item-btn paste" data-a="paste" data-id="'+t.id+'">📝 Colar no iPEN</button></div></div>').join('');
+c.querySelectorAll('.crv-item-btn').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();const tm=templates.find(x=>x.id===b.dataset.id);if(!tm)return;b.dataset.a==='copy'?navigator.clipboard.writeText(tm.texto).then(()=>showToast('Copiado!')):pasteToIPEN(tm.texto);});});}
+function pasteToIPEN(t){const f=document.getElementById('de_ObservacaoSituacao')||document.querySelector('textarea[name*="Observacao"]')||document.querySelector('textarea');if(f){f.value=t;f.dispatchEvent(new Event('input',{bubbles:true}));f.dispatchEvent(new Event('change',{bubbles:true}));showToast('Colado!');}else{navigator.clipboard.writeText(t).then(()=>showToast('Campo não encontrado — copiado!'));}}
+function showToast(m){const e=document.getElementById('crv-toast');e.textContent=m;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2000);}
+buildUI();renderList();})();`;}
+
+function escapeHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');}
+function toast(m,c){const e=document.getElementById('toast');e.textContent=m;e.style.borderColor=c||'var(--green)';e.style.color=c||'var(--green)';e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2500);}
+init();
+</script>
+</body>
+</html>
