@@ -91,14 +91,7 @@ body {
 .btn-download { background: linear-gradient(135deg, #16a34a, #0d9488); border-color: #16a34a; color: white; }
 .btn-download:hover { box-shadow: 0 4px 12px rgba(22,163,74,0.3); color: white; }
 
-.url-bar {
-  background: var(--accent-light); border-bottom: 1px solid var(--border);
-  padding: 10px 32px; display: flex; align-items: center; gap: 10px; font-size: 0.82rem;
-}
-.url-bar label { font-weight: 600; color: var(--accent); white-space: nowrap; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.03em; font-family: var(--mono); }
-.url-bar input { flex: 1; padding: 7px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: var(--mono); font-size: 0.8rem; outline: none; }
-.url-bar input:focus { border-color: var(--accent); }
-.url-bar .url-hint { color: var(--text-dim); font-size: 0.75rem; }
+
 
 .container { max-width: 1200px; margin: 0 auto; padding: 24px 32px; }
 
@@ -175,7 +168,6 @@ body {
 @media (max-width: 700px) {
   .header { padding: 14px 16px; flex-wrap: wrap; gap: 10px; }
   .header-actions { width: 100%; justify-content: flex-end; }
-  .url-bar { padding: 10px 16px; flex-wrap: wrap; }
   .container { padding: 20px 16px; }
   .templates-grid { grid-template-columns: 1fr; }
   .toolbar { flex-direction: column; align-items: stretch; }
@@ -214,11 +206,7 @@ body {
   </div>
 </header>
 
-<div class="url-bar">
-  <label>🔗 URL pública</label>
-  <input type="text" id="public-url" placeholder="https://seu-usuario.github.io/crv-templates/index.html" oninput="saveURL()">
-  <span class="url-hint">O plugin busca os templates desta URL</span>
-</div>
+
 
 <main class="container">
   <div class="toolbar">
@@ -279,13 +267,12 @@ body {
 let templates=[], editingId=null;
 const COLORS=['#16a34a','#d97706','#dc2626','#2563eb','#7c3aed','#4a6cf7','#db2777','#0d9488','#6b7280'];
 
+const PUBLIC_URL='https://crv-dpp-sc.github.io/tamplatesipen/';
+
 function init(){
   templates=JSON.parse(document.getElementById('template-data').textContent);
   renderCards(); renderJSON(); renderColorOptions();
-  const s=localStorage.getItem('crv-public-url');
-  if(s) document.getElementById('public-url').value=s;
 }
-function saveURL(){ localStorage.setItem('crv-public-url', document.getElementById('public-url').value.trim()); }
 
 function renderCards(){
   const g=document.getElementById('grid'), s=document.getElementById('search').value.toLowerCase();
@@ -328,7 +315,7 @@ async function downloadPlugin(){
   const btn=document.getElementById('btn-download');
   btn.textContent='⏳ Gerando...'; btn.disabled=true;
   try{
-    const url=document.getElementById('public-url').value.trim();
+    const url=PUBLIC_URL;
     const zip=new JSZip(), folder=zip.folder('crv-extension');
     folder.file('manifest.json',JSON.stringify({manifest_version:3,name:"CRV — Templates iPEN",version:"6.0.0",description:"Templates de transferência para o iPEN — CRV",permissions:["activeTab","clipboardWrite"],content_scripts:[{matches:["<all_urls>"],js:["crv.js"],css:["crv.css"]}]},null,2));
     folder.file('crv.css',genCSS());
